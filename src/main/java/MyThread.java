@@ -1,26 +1,29 @@
+import java.util.concurrent.Callable;
 
-class MyThread extends Thread {
-
+//Используйте Callable для создания задач, возвращающих результат.
+class MyThread implements Callable<String> {
+    private String name;
     private final int sleepTimeThread = 3000;
+    private int numberOfMessages = 0;
 
+    public MyThread(String name) {
+        this.name = name;
+    }
 
-    //Напишите свой собственный класс-поток MyThread или иное название,
-    // который переопределит метод run таким образом,
-    // чтобы раз в несколько секунд печатать сообщение в консоль.
     @Override
-    public void run() {
+    public String call() {
+        Thread.currentThread().setName(name);
         try {
-            while (true) {
-                if (!Thread.currentThread().isInterrupted()) {
-                    System.out.println("Всем привет от потока " + Thread.currentThread().getName());
-                    Thread.sleep(sleepTimeThread);
-                }
+            while (!Thread.currentThread().isInterrupted()) {
+                System.out.println("Всем Привет от потока " + Thread.currentThread().getName());
+                numberOfMessages++;
+                Thread.sleep(sleepTimeThread);
             }
-            //Используйте метод Thread.getCurrentThread.getName() для получения имени текущего потока.
         } catch (InterruptedException e) {
             System.out.println("Поток " + Thread.currentThread().getName() + " хотят прервать");
         } finally {
-            System.out.println("Поток " + Thread.currentThread().getName() + " завершен\n");
+            System.out.println("Поток " + Thread.currentThread().getName() + " завершен");
         }
+        return "    - Потоком " + Thread.currentThread().getName() + " количество сообщений: " + numberOfMessages;
     }
 }
